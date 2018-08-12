@@ -2,8 +2,8 @@
 # 测试流
 import sys
 import framework.log as log
-import base_test as common
-import constant
+import dota2Api as common
+from framework import constant
 import time
 import framework.excel as excel
 from prettytable import PrettyTable

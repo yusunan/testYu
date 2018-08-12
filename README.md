@@ -1,4 +1,12 @@
-Current result
+**Steps:
+1.从测试用例读取Excel文件
+2。遍历用例，取得Response
+3。Check status/body （any字段为任意值）
+4。Report**
+
+
+
+**Current result**
 
 2018-08-12 21:59:20,967 - root - INFO - -------------- Execute TestCases ---------------
 2018-08-12 21:59:22,120 - root - INFO - --------Number: 1 Check status passed--------
