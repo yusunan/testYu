@@ -4,11 +4,11 @@ import logging
 import time
 
 def get_logger():
-    global tezLogPath
+    global log_path
     try:
-        tezLogPath
+        log_path
     except NameError:
-        tezLogPath = "/data/log/apiTest/"
+        log_path = "/data/log/apiTest/"
     FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     # file = tezLogPath + time.strftime("%Y-%m-%d", time.localtime()) + ".log"
     # logging.basicConfig(filename=file, level=logging.INFO, format=FORMAT)

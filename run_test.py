@@ -1,19 +1,57 @@
 # -*- coding: UTF-8 -*-
-# 验证包：接口测试脚本
+# 测试流
 import sys
 import framework.log as log
 import base_test as common
+import constant
+import time
+import framework.excel as excel
+from prettytable import PrettyTable
+filename = constant.FILE_NAME
 logging = log.get_logger()
 
-
-"""1.外部输入参数"""
+"""1.外部输入API Name"""
 path = sys.path[0]      # 当前路径
-module = "Sheet1"         # 服务模块名
-# url = sys.argv[2]       # 服务地址
-"""2.根据module获取Sheet"""
+sheet = sys.argv[1]     # API Name
+"""2.根据API Name获取Sheet"""
 logging.info("-------------- Execute TestCases ---------------")
-sheet = common.get_excel_sheet(path + "/" + common.filename, module)
+excel.open_excel(path + "/" + common.filename)
+try:
+    sheet = excel.get_sheet(sheet)
+except Exception, e:
+    logging.error("--------Sheet Name: %s Not Found -----------", sys.argv[1])
+    exit()
 """3.执行测试用例"""
-res = common.run_test(sheet)
-logging.info("-------------- Get the result ------------ %s", res)
-"""这里的res是我们平滑升级的时候需要返回结果为TRUE才会继续下面走。"""
+rows = excel.get_rows(sheet)
+failed = 0
+passed = 0
+result_table = PrettyTable(["Number", "Description", "URL", "Data", "Result"])
+for i in range(2, rows):
+    if excel.get_content(sheet, i, constant.CASE_NUMBER) == '':
+        continue
+    test_number = int(excel.get_content(sheet, i, constant.CASE_NUMBER))
+    test_data = excel.get_content(sheet, i, constant.CASE_DATA)
+    test_name = excel.get_content(sheet, i, constant.CASE_NAME)
+    test_url = excel.get_content(sheet, i, constant.CASE_URL)
+    test_method = excel.get_content(sheet, i, constant.CASE_METHOD)
+    test_headers = str(excel.get_content(sheet, i, constant.CASE_HEADERS))
+    if excel.get_content(sheet, i, constant.EXPECTED) == '':
+        expected_result = {}
+    else:
+        expected_result = eval(excel.get_content(sheet, i, constant.EXPECTED))
+    test_status = excel.get_content(sheet, i, constant.CASE_STATUS)
+
+    result = common.run_test(test_method, test_url, test_data, test_headers, expected_result, test_status, test_number)
+    if result:
+        passed += 1
+        result = "Pass"
+    else:
+        failed += 1
+        result = "Failed"
+    result_table.align["URL"] = "l"
+    result_table.padding_width = 1
+    result_table.add_row([test_number, test_name, test_url, test_data, result])
+
+time.sleep(1)
+print result_table
+

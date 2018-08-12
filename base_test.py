@@ -2,47 +2,40 @@
 # 业务包：通用函数
 import framework.log as log
 import constant
-import framework.excel as excel
 import test.api_test as request
-from prettytable import PrettyTable
 filename = constant.FILE_NAME
 logging = log.get_logger()
 
 
-def get_excel_sheet(path, module):
-    """依据模块名获取sheet"""
-    excel.open_excel(path)
-    return excel.get_sheet(module)
-
-
-def run_test(sheet):
+def run_test(test_method, test_url, test_data, test_headers, expected_result, test_status, test_number):
     """再执行测试用例"""
-    rows = excel.get_rows(sheet)
-    fail = 0
-    for i in range(2, rows):
-        test_number = str(excel.get_content(sheet, i, constant.CASE_NUMBER))
-        test_data = excel.get_content(sheet, i, constant.CASE_DATA)
-        test_name = excel.get_content(sheet, i, constant.CASE_NAME)
-        test_url = excel.get_content(sheet, i, constant.CASE_URL)
-        # test_url = url + test_url
-        test_method = excel.get_content(sheet, i, constant.CASE_METHOD)
-        test_headers = str(excel.get_content(sheet, i, constant.CASE_HEADERS))
-        # test_headers = eval(replace_holder(test_headers))
-        test_code = excel.get_content(sheet, i, constant.CASE_CODE)
-        actual_code = request.api_test(test_method, test_url, test_data, test_headers)
-        expect_code = int(test_code)
-        fail_results = PrettyTable(["Number", "Method", "Url", "Data", "ActualCode", "ExpectCode"])
-        fail_results.align["Number"] = "l"
-        fail_results.padding_width = 1
-        fail_results.add_row([test_number, test_method, test_url, test_data, actual_code, expect_code])
-        if actual_code != expect_code:
-            logging.info("FailCase %s", test_name)
-            print "FailureInfo"
-            print fail_results
-            fail += 1
-        else:
-            logging.info("Number %s", test_number)
-            logging.info("TrueCase %s", test_name)
-    if fail > 0:
+
+    response = request.get_response(test_method, test_url, test_data, test_headers)
+    actual_code = response.status_code
+    expect_code = int(test_status)
+    if actual_code == expect_code:
+        logging.info("--------Number: %s Check status passed--------", test_number)
+    else:
+        logging.error("--------Number: %s Check status code failed------Expect: %s, But found: %s", test_number, expect_code, actual_code)
         return False
+    if check_body(response, expected_result):
+        logging.info("--------Number: %s Check body passed--------", test_number)
+    else:
+        logging.error("--------Number: %s Check body failed------", test_number)
+        return False
+    return True
+
+
+def check_body(response, expected_result):
+    if response.status_code == 200:
+        response = response.json()['result']
+    else:
+        response = response.text
+    for key, value in expected_result.items():
+        if value == 'any':
+            response[key] = 'any'
+        if response[key] != value:
+            logging.error("--------Check body failed------Expect: %s, But found: %s", value, response[key])
+            return False
+
     return True

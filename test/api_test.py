@@ -5,21 +5,12 @@ import framework.log as log
 logging = log.get_logger()
 
 
-def api_test(method, url, data, headers):
-    """
-    定义一个请求接口的方法和需要的参数 
-    :Args:
-    method  - 企业名称 str
-    url - 用户昵称 str
-    data - 参数 str
-    headers - 请求头信息 dict
-    非RESTful API请求另外的请求类型实际用不到。也不安全。
-    """  
+def get_response(method, url, data, headers):
     try:
         if method == "post":
             results = requests.post(url, data, headers=headers)
         if method == "get":
-            results = requests.get(url)
+            results = requests.get(url, data, headers=headers)
         if method == "put":
             results = requests.put(url, data, headers=headers)
         if method == "delete":
@@ -28,8 +19,6 @@ def api_test(method, url, data, headers):
             results == requests.patch(url, data, headers=headers)
         if method == "options":
             results == requests.options(url, headers=headers)
-        response = results.json()
-        code = results.status_code
-        return code
+        return results
     except Exception, e:
         logging.error("service is error", e)
