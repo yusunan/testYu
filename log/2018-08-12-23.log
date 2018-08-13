@@ -1,0 +1,9 @@
+2018-08-12 23:23:22,993 - framework.log - INFO - -------------- Execute TestCases ---------------
+2018-08-12 23:23:24,216 - framework.log - INFO - --------Number: 1 Check status passed--------
+2018-08-12 23:23:24,223 - framework.log - INFO - --------Number: 1 Check body passed--------
+2018-08-12 23:23:24,666 - framework.log - INFO - --------Number: 2 Check status passed--------
+2018-08-12 23:23:24,666 - framework.log - INFO - --------Number: 2 Check body passed--------
+2018-08-12 23:23:26,306 - framework.log - ERROR - --------Number: 3 Check status code failed------Expect: 403, But found: 200
+2018-08-12 23:23:27,317 - framework.log - INFO - --------Number: 4 Check status passed--------
+2018-08-12 23:23:27,323 - framework.log - ERROR - --------Check body failed------Expect: 100, But found: 500
+2018-08-12 23:23:27,324 - framework.log - ERROR - --------Number: 4 Check body failed------
