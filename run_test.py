@@ -30,7 +30,12 @@ for i in range(2, rows):
     if excel.get_content(sheet, i, constant.CASE_NUMBER) == '':
         continue
     test_number = int(excel.get_content(sheet, i, constant.CASE_NUMBER))
-    test_data = excel.get_content(sheet, i, constant.CASE_DATA)
+    if excel.get_content(sheet, i, constant.CASE_DATA) == '':
+        test_data = {}
+    else:
+        test_data = eval(excel.get_content(sheet, i, constant.CASE_DATA))
+    # test_data = excel.get_content(sheet, i, constant.CASE_DATA)
+    test_status = excel.get_content(sheet, i, constant.CASE_STATUS)
     test_name = excel.get_content(sheet, i, constant.CASE_NAME)
     test_url = excel.get_content(sheet, i, constant.CASE_URL)
     test_method = excel.get_content(sheet, i, constant.CASE_METHOD)

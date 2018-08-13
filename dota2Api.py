@@ -35,8 +35,12 @@ def check_body(response, expected_result):
     for key, value in expected_result.items():
         if value == 'any':
             response[key] = 'any'
-        if response[key] != value:
-            logging.error("--------Check body failed------Expect: %s, But found: %s", value, response[key])
+        try:
+            if response[key] != value:
+                logging.error("--------Check body failed------Expect: %s, But found: %s", value, response[key])
+                return False
+        except KeyError:
+            logging.error("--------Check body failed------Key not found: %s", key)
             return False
 
     return True
