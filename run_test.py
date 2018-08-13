@@ -25,7 +25,7 @@ except Exception, e:
 rows = excel.get_rows(sheet)
 failed = 0
 passed = 0
-result_table = PrettyTable(["Number", "Description", "URL", "Data", "Result"])
+result_table = PrettyTable(["Number", "Description", "Result"])
 for i in range(2, rows):
     if excel.get_content(sheet, i, constant.CASE_NUMBER) == '':
         continue
@@ -48,9 +48,9 @@ for i in range(2, rows):
     else:
         failed += 1
         result = "Failed"
-    result_table.align["URL"] = "l"
+    result_table.align = "l"
     result_table.padding_width = 1
-    result_table.add_row([test_number, test_name, test_url, test_data, result])
+    result_table.add_row([test_number, test_name, result])
 
 time.sleep(1)
 print result_table

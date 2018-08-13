@@ -4,6 +4,7 @@ import logging
 import os
 import time
 
+
 def get_logger():
     logger = logging.getLogger(__name__)
     logger.setLevel(level=logging.INFO)
@@ -16,6 +17,7 @@ def get_logger():
 
         console = logging.StreamHandler()
         console.setLevel(logging.INFO)
+        console.setFormatter(formatter)
 
         logger.addHandler(handler)
         logger.addHandler(console)
